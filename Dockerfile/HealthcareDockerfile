@@ -1,0 +1,9 @@
+FROM anibali/pytorch:cuda-10.1
+
+RUN pip install notebook
+RUN pip install scipy
+RUN pip install scikit-learn
+RUN pip install matplotlib
+RUN pip install pandas
+RUN pip install tensorboardX
+RUN pip install gym
