@@ -19,12 +19,10 @@ from src.utils import *
 #########################################
 # Hyperparameters #######################
 #########################################
-# data_path = "../data/MIMICzs_SASR_mortal5"  # ../data/MIMICzs_SASR_mortal3, eICUZS_SASR4
-# data_name = "MIMICzs_SASR2"  # MIMICzs_SASR, eICUZS_SASR4
 data_path = "./data/MIMIC_final_push"  # ../data/MIMICzs_SASR_mortal3, eICUZS_SASR4, MIMIC3
 data_name = "MIMIC"  # MIMICzs_SASR2, eICUZS_SASR4, MIMIC
 
-split_method = "single"  # random, sofa, region, single
+split_method = "single"
 n_rank = 1
 train_rank = [1]
 stop_all = 1  # 프로세스 하나 끝나면 모든 프로세스 종료
@@ -134,9 +132,6 @@ def train(global_model, memory, train_length, sequence, args, log_save_path):
                 elif args.scene == "highreward":
                     target = (args.highlight_coefficient * r) + args.gamma * max_q_prime * done_mask
                     loss = F.mse_loss(q_a, target)
-                elif args.scene == "Qdivision":
-                    target = r + args.gamma * (max_q_prime / args.highlight_coefficient) * done_mask
-                    loss = F.mse_loss((q_a / args.highlight_coefficient), target)
                 elif args.scene == "cql":
                     target = r + args.gamma * max_q_prime * done_mask
                     logsumexp = torch.logsumexp(q_out, dim=1, keepdim=True)
@@ -268,14 +263,6 @@ def validate(global_model, rank, memory, sequence, args):
     ids2_pd = pd.DataFrame(ids2)
     ids2_pd.columns = ['id']
 
-    # given_ivs2 = list(itertools.chain.from_iterable(given_ivs1))
-    # given_ivs2_pd = pd.DataFrame(given_ivs2)
-    # given_ivs2_pd.columns = ['given_fluid']
-    #
-    # given_vasos2 = list(itertools.chain.from_iterable(given_vasos1))
-    # given_vasos2_pd = pd.DataFrame(given_vasos2)
-    # given_vasos2_pd.columns = ['given_vaso']
-
     ori_actions2 = list(itertools.chain.from_iterable(ori_actions1))
     ori_actions2_pd = pd.DataFrame(ori_actions2)
     ori_actions2_pd.columns = ['ori_actions']
@@ -321,27 +308,27 @@ def validate(global_model, rank, memory, sequence, args):
     AI_vaso = val_data.loc[(val_data['vaso_diff'] > -0.05) & (val_data['vaso_diff'] < 0.05)]
     AI_vaso_mortal = AI_vaso['death'].mean()
 
-    ### physician action in test 저장 #####
+    ### physician action in test save #####
     with open(log_save_path + 'ori_action_test_{}.pickle'.format(sequence), 'wb') as f:
         pickle.dump(ori_action_in_test, f)
 
-    ### AI action in test 저장 #####
+    ### AI action in test save #####
     with open(log_save_path + 'action_test_{}.pickle'.format(sequence), 'wb') as f:
         pickle.dump(action_in_test, f)
 
-    ### mortality 저장 #####
+    ### mortality save #####
     with open(log_save_path + 'mortality_test_{}.pickle'.format(sequence), 'wb') as f:
         pickle.dump(mortality_in_test, f)
 
-    ### iv 저장 #####
+    ### iv save #####
     with open(log_save_path + 'iv_test_{}.pickle'.format(sequence), 'wb') as f:
         pickle.dump(iv_in_test, f)
 
-    ### vaso 저장 #####
+    ### vaso save #####
     with open(log_save_path + 'vaso_test_{}.pickle'.format(sequence), 'wb') as f:
         pickle.dump(vaso_in_test, f)
 
-    ### id 저장 #####
+    ### id save #####
     with open(log_save_path + 'id_test_{}.pickle'.format(sequence), 'wb') as f:
         pickle.dump(id_in_test, f)
 
@@ -381,27 +368,27 @@ def test(global_model, rank, memory, sequence, args, log_save_path):
             vaso_in_test.append(vaso.to('cpu').detach())
             id_in_test.append(id.to('cpu').detach())
 
-    ### physician action in test 저장 #####
+    ### physician action in test save #####
     with open(log_save_path + 'ori_action_test_{}.pickle'.format(sequence), 'wb') as f:
         pickle.dump(ori_action_in_test, f)
 
-    ### AI action in test 저장 #####
+    ### AI action in test save #####
     with open(log_save_path + 'action_test_{}.pickle'.format(sequence), 'wb') as f:
         pickle.dump(action_in_test, f)
 
-    ### mortality 저장 #####
+    ### mortality save #####
     with open(log_save_path + 'mortality_test_{}.pickle'.format(sequence), 'wb') as f:
         pickle.dump(mortality_in_test, f)
 
-    ### iv 저장 #####
+    ### iv save #####
     with open(log_save_path + 'iv_test_{}.pickle'.format(sequence), 'wb') as f:
         pickle.dump(iv_in_test, f)
 
-    ### vaso 저장 #####
+    ### vaso save #####
     with open(log_save_path + 'vaso_test_{}.pickle'.format(sequence), 'wb') as f:
         pickle.dump(vaso_in_test, f)
 
-    ### id 저장 #####
+    ### id save #####
     with open(log_save_path + 'id_test_{}.pickle'.format(sequence), 'wb') as f:
         pickle.dump(id_in_test, f)
 
@@ -460,12 +447,12 @@ def training_step (sequence, args, log_save_path):
     global_model.share_memory()  # Global model 공유
     memory = ReplayBuffer(device=device, n_rank=n_rank)
 
-    # data 불러오기
+    # data load
     SASR = load_mat_files(file_name=data_path, key_name=data_name)
     SASR = data_norm(SASR, args)
     episodes = split_episodes(SASR)
 
-    # data 나눠서 buffer에 넣기
+    # data split and put buffer
     train_idxes, valid_idxes, test_idxes \
         = split_idxes(split_method, n_rank, episodes, split_size, seed=SPLIT_SEED, shuffle=True)
 
@@ -490,7 +477,7 @@ def training_step (sequence, args, log_save_path):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument("--iter", type=int, default=20)
-    parser.add_argument("--max-epoch", type=int, default=500) #200
+    parser.add_argument("--max-epoch", type=int, default=1) #200
     parser.add_argument("--lr", type=float, default=0.00001)
     parser.add_argument("--clip", type=float, default=3.3) #3.3, 4.0
     parser.add_argument("--isover", type=bool, default=False)
@@ -499,7 +486,7 @@ if __name__ == '__main__':
     parser.add_argument("--batch-size", type=int, default=4096)
     parser.add_argument("--gamma", type=float, default=0.95)
     parser.add_argument("--log-save-dir", type=str, default=f"./result/")
-    parser.add_argument("--scene", type=str, default="Qdivision") #highlight, highreward, Qdivision, cql, bcq
+    parser.add_argument("--scene", type=str, default="highlight") #highlight, highreward, cql, bcq
     parser.add_argument("--lr-decay", type=float, default=0.99)
     parser.add_argument("--th", type=float, default=0.3)
     args = parser.parse_args()
