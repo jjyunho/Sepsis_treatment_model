@@ -55,8 +55,8 @@ def plot_result(survival_data, death_data, legends, colors, epoch, result_path, 
 
 
 def main():
-    result_path = '../result/'  # 그래프를 그릴 결과 폴더가 모여있는 경로
-    data_ids = [  # 그 안에 그리고 싶은 결과 폴더 이름
+    result_path = '../result/'
+    data_ids = [  # folder name
         'scene+Qdivisionhighlight_33_lr1e-05_lr-decay0.99_batch4096_epoch200_222099',
 
     ]
@@ -69,7 +69,7 @@ def main():
         'red'
     ]
 
-    data_set_name = 'tracing'  # 그래프 저장 시 뒤에 붙을 이름
+    data_set_name = 'tracing'  # graph name
 
     num_data = 1
     # epoch = [1, 5, 10, 20, 50, 100, 200, 300, 400, 500]

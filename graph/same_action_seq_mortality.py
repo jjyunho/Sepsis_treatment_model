@@ -51,8 +51,8 @@ def get_deathrate_iv_vaso(data_id, data_num, how, path):
 
 
 def main():
-    result_path = './test/'  # 그래프를 그릴 결과 폴더가 모여있는 경로
-    data_ids = [  # 그 안에 그리고 싶은 결과 폴더 이름
+    result_path = './test/'
+    data_ids = [  # folder name
         'yh_single',
         'sm_single',
     ]

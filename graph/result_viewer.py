@@ -4,9 +4,6 @@ from matplotlib import pyplot as plt
 
 
 def read_results(num, id, epoch, path):
-    # ai_ivfs = np.asarray([pickle.load(open(path + id + '/{}_AI_ivf_survival_rate_list.pickle'.format(i+1), 'rb')) for i in range(num)])
-    # ai_vasos = np.asarray([pickle.load(open(path + id + '/{}_AI_vaso_survival_rate_list.pickle'.format(i+1), 'rb')) for i in range(num)])
-    # physician = np.asarray([pickle.load(open(path + id + '/{}_physician_survival_rate_list.pickle'.format(i+1), 'rb')) for i in range(num)])
     ai_ivfs = np.asarray([pickle.load(open(path + id + '/{}_AI_ivf_survival_rate_list.pickle'.format(1), 'rb')) for i in range(num)])
     ai_vasos = np.asarray([pickle.load(open(path + id + '/{}_AI_vaso_survival_rate_list.pickle'.format(1), 'rb')) for i in range(num)])
     physician = np.asarray([pickle.load(open(path + id + '/{}_physician_survival_rate_list.pickle'.format(1), 'rb')) for i in range(num)])
@@ -69,8 +66,8 @@ def get_data(id, epoch, num, path):
 
 
 def main():
-    result_path = '../result/'  # 그래프를 그릴 결과 폴더가 모여있는 경로
-    data_ids = [  # 그 안에 그리고 싶은 결과 폴더 이름
+    result_path = '../result/'
+    data_ids = [  # target folder
         # 'highlight_c100',
         # 'single_mimic2',
         'scene+Qdivisionhighlight_33_lr1e-05_lr-decay0.99_batch4096_epoch200_222099'
@@ -84,7 +81,7 @@ def main():
         # 'black'
     ]
 
-    data_set_name = 'test'  # 그래프 저장 시 뒤에 붙을 이름
+    data_set_name = 'test'
 
     num_data = 1
     epoch = 500

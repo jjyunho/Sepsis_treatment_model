@@ -84,15 +84,9 @@ def plot_vshape(axes, results, data_id, legend, i, color, is_value):
 
 
 def main():
-    result_path = '../result/'  # 그래프를 그릴 결과 폴더가 모여있는 경로
-    data_ids = [  # 그 안에 그리고 싶은 결과 폴더 이름
-        # 'scene+highrewardhighlight_100_lr1e-06_batch4096_iter20_103914',
-        # 'scene+highrewardhighlight_10_lr1e-06_batch4096_iter20_103972',
-        # 'scene+highrewardhighlight_1_lr1e-06_batch4096_iter20_104005',
-        # 'scene+highrewardhighlight_10_lr1e-07_batch4096_iter20_104435',
-        # 'scene+highrewardhighlight_1_lr1e-07_batch4096_iter20_104469'
+    result_path = '../result/'
+    data_ids = [  # target folder name
         'scene+Qdivisionhighlight_33_lr1e-05_lr-decay0.99_batch4096_epoch200_222099'
-
 
     ]
     legends = [
@@ -111,12 +105,12 @@ def main():
         # 'blue'
     ]
 
-    data_set_name = 'test'  # 그래프 저장 시 뒤에 붙을 이름
+    data_set_name = 'test'  # graph name
 
     how = 'mean' #mean, sum
     num_data = 1
 
-    is_value = 1  # V shape에서 꼭지점에 해당하는 값 출력 여부
+    is_value = 1
 
     results = dict()
     for data_id in data_ids:

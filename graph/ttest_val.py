@@ -16,14 +16,14 @@ def get_p_value(a, b):
 
 
 def main():
-    result_path = './test/'  # 그래프를 그릴 결과 폴더가 모여있는 경로
-    data_ids = [  # 그 안에 그리고 싶은 결과 폴더 이름
+    result_path = './test/'
+    data_ids = [  # folder name
         'highlight_c100',
         'single_mimic2',
     ]
 
     num_data = 100
-    num_epoch = 10  # t test에 사용할 epoch 수 (뒤에서부터)
+    num_epoch = 10  # t test epoch
     epoch = 500
 
     datas = dict()
